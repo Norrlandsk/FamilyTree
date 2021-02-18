@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 
 namespace FamilyTree
 {
@@ -6,7 +7,7 @@ namespace FamilyTree
     {
         static void Main(string[] args)
         {
-           
+            People.Setup();
         }
     }
 }
