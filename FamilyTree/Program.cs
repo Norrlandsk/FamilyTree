@@ -7,7 +7,12 @@ namespace FamilyTree
     {
         static void Main(string[] args)
         {
-            People.Setup();
+            
+            
+            
+
+            
+            Menu.MainMenu();
         }
     }
 }

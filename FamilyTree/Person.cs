@@ -12,8 +12,9 @@ namespace FamilyTree
 
         }
 
-        public Person(string firstName, string lastName, int year, int fatherId=0, int motherId=0)
+        public Person( string firstName, string lastName, int year, int fatherId = 0, int motherId = 0, int id = 0)
         {
+            Id = id;
             FirstName = firstName;
             LastName = lastName;
             Year = year;
@@ -22,7 +23,7 @@ namespace FamilyTree
 
         }
 
-
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Year { get; set; }
@@ -41,12 +42,21 @@ namespace FamilyTree
             Console.Write("Father's id: ");
             person.FatherId = Convert.ToInt32(Console.ReadLine());
             Console.Write("Mother's id: ");
-            person.MotherId= Convert.ToInt32(Console.ReadLine());
+            person.MotherId = Convert.ToInt32(Console.ReadLine());
 
-            People.Create(person);
+            People.listOfPeople.Add(person);
+            People.CreatePerson(person);
         }
-       
+        
 
+
+        public static void Read(Person person)
+        {
+
+            Console.WriteLine($"{person.FirstName} {person.LastName} {person.Year} {person.FatherId} {person.MotherId}");
+
+
+        }
 
 
     }

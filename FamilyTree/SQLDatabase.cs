@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
 using System.Data;
+using System.Linq;
 
 namespace FamilyTree
 {
@@ -68,6 +69,24 @@ namespace FamilyTree
                 System.Console.WriteLine(ex.Message);
             }
             return rowsAffected;
+        }
+
+        public static void ReadDataTable(DataTable dT)
+        {
+            Console.WriteLine("Id || First name || Last name || Year of birth || Father's Id || Mother's Id");
+            string[] columnNames = dT.Columns.Cast<DataColumn>()
+                                 .Select(x => x.ColumnName)
+                                 .ToArray();
+
+            foreach (DataRow row in dT.Rows)
+            {
+                for (int i = 0; i < columnNames.Length; i++)
+                {
+                    Console.Write($"{row[columnNames[i]]} ");
+                }
+                Console.WriteLine();
+            }
+            Menu.ContinueAndClear();
         }
     }
 }
