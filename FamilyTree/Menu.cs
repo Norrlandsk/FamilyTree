@@ -84,9 +84,11 @@ namespace FamilyTree
                         break;
 
                     case 6:
+                        People.SearchByLetter();
                         break;
 
                     case 7:
+                        People.SearchByYear();
                         break;
 
                     case 8:

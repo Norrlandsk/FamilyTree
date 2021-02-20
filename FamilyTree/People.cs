@@ -6,7 +6,7 @@ namespace FamilyTree
 {
     internal class People
     {
-        public static List<Person> listOfPeople = new List<Person>();
+       
 
         #region CRUD
 
@@ -20,6 +20,23 @@ namespace FamilyTree
 
             var sql = @"INSERT INTO People VALUES (@firstName, @lastName, @year, @fatherId, @motherId)";
             long rowsAffected = SQLDatabase.ExecuteSQL(sql, firstNameParam, lastNameParam, yearParam, fatherIdParam, motherIdParam);
+        }
+
+        public static void DeletePerson(Person person)
+        {
+            Console.WriteLine("Are you sure you wish to delete this member? [y/n]");
+            var choice = Console.ReadLine().ToUpper();
+            if (choice == "Y")
+            {
+                var sql = $"DELETE FROM People WHERE id={person.Id};";
+                long rowsAffected = SQLDatabase.ExecuteSQL(sql);
+                Console.WriteLine($"{rowsAffected} row(s) affected!");
+                Menu.ContinueAndClear();
+            }
+            else
+            {
+                Menu.ContinueAndClear();
+            }
         }
 
         public static void ReadPerson(Person person)
@@ -127,27 +144,71 @@ namespace FamilyTree
             return confirmedChoice;
         }
 
-        public static void DeletePerson(Person person)
+        private static int YearPrompt()
         {
-            Console.WriteLine("Are you sure you wish to delete this member? [y/n]");
-            var choice = Console.ReadLine().ToUpper();
-            if (choice == "Y")
+            int confirmedChoice;
+            do
             {
-                var sql = $"DELETE FROM People WHERE id={person.Id};";
-                long rowsAffected = SQLDatabase.ExecuteSQL(sql);
-                Console.WriteLine($"{rowsAffected} row(s) affected!");
-                Menu.ContinueAndClear();
-            }
-            else
-            {
-                Menu.ContinueAndClear();
-            }
-        }
+                Console.Write("Enter year: ");
+                string menuChoiceString = Console.ReadLine();
 
+                bool successfulConversion = Int32.TryParse(menuChoiceString, out confirmedChoice);
+
+                if (successfulConversion)
+                {
+                    break;
+                }
+                else if (menuChoiceString == "")
+                {
+                    break;
+                }
+                else
+                {
+                    Console.Write("Invalid input!\n");
+                }
+            } while (true);
+            return confirmedChoice;
+        }
         #endregion CRUD
 
         #region Search
 
+        public static void TraceGrandparents(Person person)
+        {
+
+        }
+        public static void SearchByLetter()
+        {
+            Console.Write("Enter first letter of name:");
+            var choice = Console.ReadLine();
+            choice = choice + "%";
+
+            var letterParam = ("@letter", choice);
+
+            var sql = "SELECT * FROM People WHERE firstname LIKE @letter";
+           
+           DataTable dt=SQLDatabase.GetDataTable(sql, letterParam);
+            if (dt.Rows.Count > 0)
+            {
+                SQLDatabase.ReadDataTable(dt);
+            }
+            else
+            {
+                Console.WriteLine("No search results!");
+            }
+            Menu.ContinueAndClear();
+        }
+
+        public static void SearchByYear()
+        {
+            int choice=YearPrompt();
+
+            var sql = $"SELECT * FROM People WHERE year LIKE '{choice}'";
+            DataTable dt=SQLDatabase.GetDataTable(sql);
+            SQLDatabase.ReadDataTable(dt);
+            Menu.ContinueAndClear();
+
+        }
         public static Person Search()
         {
             bool isRunning = true;
@@ -195,6 +256,15 @@ namespace FamilyTree
             return person;
         }
 
+        public static void ShowFamilyTree()
+        {
+            var sql = "SELECT * FROM People ORDER BY id";
+
+            DataTable dt = SQLDatabase.GetDataTable(sql);
+            SQLDatabase.ReadDataTable(dt);
+            Menu.ContinueAndClear();
+        }
+
         public static void Test(Person person)
         {
             Console.WriteLine($"{person.FirstName}{person.LastName}{person.Year}{person.FatherId}{person.MotherId}");
@@ -219,34 +289,17 @@ namespace FamilyTree
             person.FatherId = (int)row["fatherId"];
             person.MotherId = (int)row["motherId"];
         }
-
-        public static Person RefineSearch(List<Person> person)
-        {
-            Console.WriteLine("Which one did you mean?\n");
-            int i = 0;
-            int choice = 0;
-            foreach (var item in person)
-            {
-                for (i = 0; i < person.Count; i++)
-                {
-                    Console.WriteLine($"[{i + 1}] {item.FirstName}, {item.LastName}, {item.Year} ");
-                }
-            }
-            choice = Convert.ToInt32(Console.ReadLine());
-            return person[choice - 1];
-        }
-
-        public static void ShowFamilyTree()
-        {
-            var sql = "SELECT * FROM People ORDER BY id";
-
-            DataTable dt = SQLDatabase.GetDataTable(sql);
-            SQLDatabase.ReadDataTable(dt);
-        }
-
         #endregion Search
 
         #region Database and Table
+
+        public static void AltSetup()
+        {
+            CreateDatabase();
+            CreateTable();
+            Console.WriteLine("Database created, table empty!");
+            Menu.ContinueAndClear();
+        }
 
         public static void CreateDatabase()
         {
@@ -289,15 +342,6 @@ namespace FamilyTree
             Console.WriteLine("Database created, table populated!");
             Menu.ContinueAndClear();
         }
-
-        public static void AltSetup()
-        {
-            CreateDatabase();
-            CreateTable();
-            Console.WriteLine("Database created, table empty!");
-            Menu.ContinueAndClear();
-        }
-
         #endregion Database and Table
     }
 }

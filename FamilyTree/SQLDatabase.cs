@@ -86,7 +86,7 @@ namespace FamilyTree
                 }
                 Console.WriteLine();
             }
-            Menu.ContinueAndClear();
+            
         }
     }
 }
