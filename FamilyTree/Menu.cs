@@ -4,8 +4,10 @@ namespace FamilyTree
 {
     internal class Menu
     {
-        static bool isRunning = true;
+        private static bool isRunning = true;
+
         #region Menus
+
         public static void MainMenu()
         {
             while (isRunning)
@@ -23,10 +25,12 @@ namespace FamilyTree
                         People.Setup();
                         CRUDAndSearchMenu();
                         break;
+
                     case 2:
                         People.AltSetup();
                         CRUDAndSearchMenu();
                         break;
+
                     case 3:
                         Console.WriteLine("Exiting...");
                         isRunning = false;
@@ -61,38 +65,49 @@ namespace FamilyTree
                     case 1:
                         Person.CreatePerson();
                         break;
+
                     case 2:
-                        
-                        People.ReadPerson(People.Search(People.listOfPeople));
+                        People.ReadPerson(People.Search());
+
                         break;
+
                     case 3:
-                        People.UpdatePerson(People.Search(People.listOfPeople));
+                        People.UpdatePerson(People.Search());
                         break;
+
                     case 4:
-                        People.DeletePerson(People.Search(People.listOfPeople));
+                        People.DeletePerson(People.Search());
                         break;
+
                     case 5:
                         People.ShowFamilyTree();
                         break;
+
                     case 6:
                         break;
+
                     case 7:
                         break;
+
                     case 8:
                         break;
+
                     case 9:
                         break;
+
                     case 10:
                         Console.WriteLine("Exiting...");
                         isRunning = false;
                         break;
                 }
             }
-
         }
+
         #endregion Menus
 
         #region Tools
+
+
         public static int ConfirmCorrectInput(int allowedRange)
         {
             int confirmedChoice;
@@ -117,12 +132,39 @@ namespace FamilyTree
             } while (true);
             return confirmedChoice;
         }
+
+        public static int ConfirmCorrectInput(string value)
+        {
+            int confirmedChoice;
+            do
+            {
+                string menuChoiceString = Console.ReadLine();
+
+                bool successfulConversion = Int32.TryParse(menuChoiceString, out confirmedChoice);
+
+                if (successfulConversion)
+                {
+                    break;
+                }
+                else if (menuChoiceString == "")
+                {
+                    break;
+                }
+                else
+                {
+                    Console.Write("Invalid input!\n");
+                }
+            } while (true);
+            return confirmedChoice;
+        }
+
         public static void ContinueAndClear()
         {
             Console.WriteLine("\nPress Enter to continue");
             Console.ReadLine();
             Console.Clear();
         }
+
         #endregion Tools
     }
 }

@@ -44,7 +44,7 @@ namespace FamilyTree
             Console.Write("Mother's id: ");
             person.MotherId = Convert.ToInt32(Console.ReadLine());
 
-            People.listOfPeople.Add(person);
+           
             People.CreatePerson(person);
         }
         
