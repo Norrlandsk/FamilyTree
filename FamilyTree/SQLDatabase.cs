@@ -10,7 +10,7 @@ namespace FamilyTree
     public class SQLDatabase
     {
         
-        private static string ConnectionString { get; set; } = @"Data source=.\SQLExpress; Integrated Security=true; Database={0}";
+        public static string ConnectionString { get; set; } = @"Data source=.\SQLExpress; Integrated Security=true; database='{0}'";
         public static string DatabaseName { get; set; }
 
 
@@ -35,7 +35,7 @@ namespace FamilyTree
 
             //Konverterar datan och fyller tabellen (dataTable)
             new SqlDataAdapter(command).Fill(dataTable);
-
+            
             //Stänger kopplingen till databasen
             connection.Close();
 
@@ -88,5 +88,7 @@ namespace FamilyTree
             }
             
         }
+
+        
     }
 }

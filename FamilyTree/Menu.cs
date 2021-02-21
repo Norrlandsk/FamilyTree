@@ -92,9 +92,11 @@ namespace FamilyTree
                         break;
 
                     case 8:
+                        People.TraceGrandparents(People.Search());
                         break;
 
                     case 9:
+                        People.TraceChildren(People.Search());
                         break;
 
                     case 10:
