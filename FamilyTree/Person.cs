@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.SqlClient;
 
 namespace FamilyTree
 {
-    internal class Person
+    class Person
     {
         public Person()
         {
+
         }
 
-        public Person(string firstName, string lastName, int year, int fatherId = 0, int motherId = 0, int id = 0)
+        public Person( string firstName, string lastName, int year, int fatherId = 0, int motherId = 0, int id = 0)
         {
             Id = id;
             FirstName = firstName;
@@ -16,6 +20,7 @@ namespace FamilyTree
             Year = year;
             FatherId = fatherId;
             MotherId = motherId;
+
         }
 
         public int Id { get; set; }
@@ -25,7 +30,6 @@ namespace FamilyTree
         public int FatherId { get; set; }
         public int MotherId { get; set; }
 
-        //Creates an object of class Person and sets properties, then sends object to CRUD method CreatePerson()
         public static void CreatePerson()
         {
             Person person = new Person();
@@ -40,7 +44,20 @@ namespace FamilyTree
             Console.Write("Mother's id: ");
             person.MotherId = Convert.ToInt32(Console.ReadLine());
 
+           
             People.CreatePerson(person);
         }
+        
+
+
+        public static void Read(Person person)
+        {
+
+            Console.WriteLine($"{person.FirstName} {person.LastName} {person.Year} {person.FatherId} {person.MotherId}");
+
+
+        }
+
+
     }
 }

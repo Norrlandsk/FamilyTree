@@ -1,39 +1,46 @@
 ﻿using System;
-using System.Data;
+using System.Collections.Generic;
+using System.Text;
 using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 
 namespace FamilyTree
 {
     public class SQLDatabase
     {
-        //Properties for connecting to Database
+        
         public static string ConnectionString { get; set; } = @"Data source=.\SQLExpress; Integrated Security=true; database='{0}'";
-
         public static string DatabaseName { get; set; }
 
-        //Sends a sql query to the database and returns a DataTable
+
         public static DataTable GetDataTable(string sql, params (string, object)[] parameters)
         {
+            //Instansierar en ny tom tabell att fylla
             var dataTable = new DataTable();
 
+            //Skapar en koppling till databasen med propertyn ConnectionString
             ConnectionString = string.Format(ConnectionString, DatabaseName);
             var connection = new SqlConnection(ConnectionString);
 
+            //Aktiverar kopplingen till databasen
             connection.Open();
 
+            //Skickar query till databasen (sqlString), och försäkrar oss om att det är rätt databas vi skickar till (connection)
             var command = new SqlCommand(sql, connection);
+
+            //Lägger till parametrar att skicka till servern
 
             SetParameters(parameters, command);
 
+            //Konverterar datan och fyller tabellen (dataTable)
             new SqlDataAdapter(command).Fill(dataTable);
-
+            
+            //Stänger kopplingen till databasen
             connection.Close();
 
             return dataTable;
         }
-
-        //Sets the parameters used in the query
         private static void SetParameters((string, object)[] parameters, SqlCommand command)
         {
             foreach (var item in parameters)
@@ -41,8 +48,6 @@ namespace FamilyTree
                 command.Parameters.AddWithValue(item.Item1, item.Item2);
             }
         }
-
-        //Sends a sql query to the database and returns a long for rows affected
         public static long ExecuteSQL(string sqlString, params (string, object)[] parameters)
         {
             long rowsAffected = 0;
@@ -66,10 +71,8 @@ namespace FamilyTree
             return rowsAffected;
         }
 
-        //Reads the Datatable
         public static void ReadDataTable(DataTable dT)
         {
-            Console.Clear();
             Console.WriteLine("Id || First name || Last name || Year of birth || Father's Id || Mother's Id");
             string[] columnNames = dT.Columns.Cast<DataColumn>()
                                  .Select(x => x.ColumnName)
@@ -83,6 +86,9 @@ namespace FamilyTree
                 }
                 Console.WriteLine();
             }
+            
         }
+
+        
     }
 }

@@ -8,7 +8,6 @@ namespace FamilyTree
     {
         #region CRUD
 
-        //Parameterize properties of Person object and sends it to Database
         public static void CreatePerson(Person person)
         {
             var firstNameParam = ("@firstName", person.FirstName);
@@ -19,10 +18,8 @@ namespace FamilyTree
 
             var sql = @"INSERT INTO People VALUES (@firstName, @lastName, @year, @fatherId, @motherId)";
             long rowsAffected = SQLDatabase.ExecuteSQL(sql, firstNameParam, lastNameParam, yearParam, fatherIdParam, motherIdParam);
-            Menu.ContinueAndClear();
         }
 
-        //Prompts user if want to delete person, if yes, deletes person from Database
         public static void DeletePerson(Person person)
         {
             Console.WriteLine("Are you sure you wish to delete this member? [y/n]");
@@ -40,7 +37,6 @@ namespace FamilyTree
             }
         }
 
-        //Reads all info about chosen person
         public static void ReadPerson(Person person)
         {
             var idParam = ("@id", person.Id);
@@ -51,7 +47,6 @@ namespace FamilyTree
             Menu.ContinueAndClear();
         }
 
-        //Lets user choose what property to update
         public static void UpdatePerson(Person person)
         {
             bool isRunning = true;
@@ -93,7 +88,6 @@ namespace FamilyTree
                         break;
 
                     case 6:
-                        Menu.ContinueAndClear();
                         isRunning = false;
                         break;
                 }
@@ -114,7 +108,6 @@ namespace FamilyTree
             }
         }
 
-        //Prompts user for new value to property in UpdatePerson()
         private static string ValuePrompt()
         {
             string newValue;
@@ -123,7 +116,6 @@ namespace FamilyTree
             return newValue;
         }
 
-        //Prompts user for new value and confirms it is an int for property in UpdatePerson()
         private static int ValuePromptInt()
         {
             int confirmedChoice;
@@ -150,7 +142,6 @@ namespace FamilyTree
             return confirmedChoice;
         }
 
-        //Prompts user for year in SearchByYear(), confirms it is an int
         private static int YearPrompt()
         {
             int confirmedChoice;
@@ -181,69 +172,29 @@ namespace FamilyTree
 
         #region Search
 
-        //Retrieves children based on Person object's Id
         public static void TraceChildren(Person person)
         {
-            var sql = $"SELECT * FROM People WHERE fatherId={person.Id} OR motherId={person.Id}";
-            var childList = SQLDatabase.GetDataTable(sql);
-            Console.WriteLine($"{person.FirstName} {person.LastName}'s child(ren)");
-            SQLDatabase.ReadDataTable(childList);
-            Menu.ContinueAndClear();
+            var parent = person.Id;
+            var sql = $"SELECT * FROM People WHERE";
         }
 
-        private static int IfFatherRowNull(object indata)
-        {
-            int id = (int)indata;
-            if ((int)indata == 0)
-            {
-                return id = 999;
-            }
-            else
-            {
-                return id;
-            }
-        }
-
-        private static int IfMotherRowNull(object indata)
-        {
-            int id = (int)indata;
-            if ((int)indata == 0)
-            {
-                return id = 999;
-            }
-            else
-            {
-                return id;
-            }
-        }
-
-        //Retrieves parents and grandparents based on Person object's Id |||||||| CRASHES IF DATATABLE RETURNS EMPTY
         public static void TraceGrandparents(Person person)
         {
-            var father = IfFatherRowNull(person.FatherId);
-            var mother = IfMotherRowNull(person.MotherId);
+            var father = person.FatherId;
+            var mother = person.MotherId;
 
             var sqlFather = $"SELECT * FROM People WHERE id={father}";
             var sqlMother = $"SELECT * FROM People WHERE id={mother}";
             DataTable fatherData = SQLDatabase.GetDataTable(sqlFather);
             DataTable motherData = SQLDatabase.GetDataTable(sqlMother);
-            var PaternalfatherNext = IfFatherRowNull(fatherData.Rows[0][4]);
-            var PaternalmotherNext = IfMotherRowNull(fatherData.Rows[0][5]);
 
-            //IfFatherRowNull(PaternalfatherNext);
-            //IfMotherRowNull(PaternalmotherNext);
-
-            var sqlPaternalGrandfather = $"SELECT * FROM People WHERE id={PaternalfatherNext}";
-            var sqlPaternalGrandmother = $"SELECT * FROM People WHERE id={PaternalmotherNext}";
+            var sqlPaternalGrandfather = $"SELECT * FROM People WHERE id={fatherData.Rows[0][4]}";
+            var sqlPaternalGrandmother = $"SELECT * FROM People WHERE id={fatherData.Rows[0][5]}";
             DataTable paternalGrandfatherData = SQLDatabase.GetDataTable(sqlPaternalGrandfather);
             DataTable paternalGrandmotherData = SQLDatabase.GetDataTable(sqlPaternalGrandmother);
-            var maternalFatherNext = IfFatherRowNull(motherData.Rows[0][4]);
-            var maternalMotherNext = IfMotherRowNull(motherData.Rows[0][5]);
 
-            //IfFatherRowNull(maternalFatherNext);
-            //IfMotherRowNull(maternalMotherNext);
-            var sqlMaternalGrandfather = $"SELECT * FROM People WHERE id={maternalFatherNext}";
-            var sqlMaternalGrandmother = $"SELECT * FROM People WHERE id={maternalMotherNext}";
+            var sqlMaternalGrandfather = $"SELECT * FROM People WHERE id={motherData.Rows[0][4]}";
+            var sqlMaternalGrandmother = $"SELECT * FROM People WHERE id={motherData.Rows[0][5]}";
             DataTable maternalGrandfatherData = SQLDatabase.GetDataTable(sqlMaternalGrandfather);
             DataTable maternalGrandmotherData = SQLDatabase.GetDataTable(sqlMaternalGrandmother);
 
@@ -273,10 +224,8 @@ namespace FamilyTree
             {
                 Console.WriteLine($"Maternal grandmother: {row["firstName"]} {row["lastName"]}");
             }
-            Menu.ContinueAndClear();
         }
 
-        //Prompts for a letter, retrieves all instances of matches by first name
         public static void SearchByLetter()
         {
             Console.Write("Enter first letter of name:");
@@ -299,7 +248,6 @@ namespace FamilyTree
             Menu.ContinueAndClear();
         }
 
-        //Prompts for a year, retrieves all matches
         public static void SearchByYear()
         {
             int choice = YearPrompt();
@@ -310,8 +258,6 @@ namespace FamilyTree
             Menu.ContinueAndClear();
         }
 
-        //Prompts user for name to search for in database, if multiple matches, prompts user for correct match, then sends DataTable and Person object to
-        //FillPersonObject()
         public static Person Search()
         {
             bool isRunning = true;
@@ -353,20 +299,12 @@ namespace FamilyTree
                 }
                 else
                 {
-                    Console.WriteLine("No results for that query! Try different spelling or add % as a wildcard. Try again? [y/n]");
-                    var choice = Console.ReadLine().ToLower();
-                    if (choice=="n")
-                    {
-                        isRunning = false;
-                    }
-                    
+                    Console.WriteLine("No results for that query! Try different spelling or add % as a wildcard");
                 }
             }
-            Menu.ContinueAndClear();
             return person;
         }
 
-        //Shows all members of database
         public static void ShowFamilyTree()
         {
             var sql = "SELECT * FROM People ORDER BY id";
@@ -376,7 +314,11 @@ namespace FamilyTree
             Menu.ContinueAndClear();
         }
 
-        //Fills Person object with properties from Search(), for use when only one row in DataTable
+        public static void Test(Person person)
+        {
+            Console.WriteLine($"{person.FirstName}{person.LastName}{person.Year}{person.FatherId}{person.MotherId}");
+        }
+
         private static void FillPersonObject(DataTable dt, Person person)
         {
             person.Id = (int)dt.Rows[0]["id"];
@@ -387,7 +329,6 @@ namespace FamilyTree
             person.MotherId = (int)dt.Rows[0]["motherId"];
         }
 
-        //Fills Person object with properties from Search(), for use when DataTable returns multiple rows
         private static void FillPersonObject(DataRow row, Person person)
         {
             person.Id = (int)row["id"];
@@ -402,7 +343,6 @@ namespace FamilyTree
 
         #region Database and Table
 
-        //Creates Database and Table and gives user empty table to work with
         public static void AltSetup()
         {
             CreateDatabase();
@@ -410,17 +350,14 @@ namespace FamilyTree
             Menu.ContinueAndClear();
         }
 
-        //Creates Database and Table and populates table with members
         public static void Setup()
         {
             CreateDatabase();
             CreateTable();
-            PopulateDatabase();
-
+            
             Menu.ContinueAndClear();
         }
 
-        //Checks if database exist before trying to create a new database, to be used in CreateDatabase()
         internal static bool CheckDatabaseExists(string connectionstring, string databaseName)
         {
             using (var connection = new SqlConnection(connectionstring))
@@ -433,24 +370,45 @@ namespace FamilyTree
             }
         }
 
-        //Creates a new database named "FamilyTree"
         public static void CreateDatabase()
         {
-            var connstring = @"Data source=.\SQLExpress; Integrated Security=true;";
-            if (CheckDatabaseExists(connstring, "FamilyTree") == false)
+            var connstring=@"Data source=.\SQLExpress; Integrated Security=true;";
+            if (CheckDatabaseExists(connstring,"FamilyTree")==false)
             {
+
                 var sql = "CREATE DATABASE FamilyTree";
                 SQLDatabase.ExecuteSQL(sql);
                 Console.WriteLine("Database created!");
+
             }
             else
             {
-                Console.WriteLine("Database already exists, using existing database");
+            Console.WriteLine("DB exists");
+
             }
-            SQLDatabase.DatabaseName = "FamilyTree";
+               SQLDatabase.DatabaseName = "FamilyTree";
         }
 
-        //Checks if database already contains a Table named "People", returns a bool for use in CreateTable()
+        public static void Test()
+        {
+            string sqlDatabaseList = "SELECT name FROM sys.databases";
+            DataTable databaseList = SQLDatabase.GetDataTable(sqlDatabaseList);
+            foreach (DataRow row in databaseList.Rows)
+            {
+                Console.WriteLine($"{row["name"]}");
+            }
+        }
+
+        public static void Testtb()
+        {
+            string sqlDatabaseList = "SELECT * FROM information_schema.tables; ";
+            DataTable datatableList = SQLDatabase.GetDataTable(sqlDatabaseList);
+
+            SQLDatabase.ReadDataTable(datatableList);
+        }
+
+      
+
         private static bool DoesDatatableExist()
         {
             bool datatableExist = false;
@@ -458,7 +416,7 @@ namespace FamilyTree
             string sqlDatatableList = "SELECT * FROM information_schema.tables WHERE TABLE_NAME='People';";
             DataTable datatableList = SQLDatabase.GetDataTable(sqlDatatableList);
 
-            if (datatableList.Rows.Count > 0)
+            if (datatableList.Rows.Count >0)
             {
                 datatableExist = true;
             }
@@ -466,9 +424,9 @@ namespace FamilyTree
             return datatableExist;
         }
 
-        //Creates table
         public static void CreateTable()
         {
+
             bool DoesDatatableexist = DoesDatatableExist();
             if (!DoesDatatableexist)
             {
@@ -484,16 +442,17 @@ namespace FamilyTree
 
                 SQLDatabase.ConnectionString = @"Data source=.\SQLExpress; Integrated Security=true; database='FamilyTree'";
                 SQLDatabase.ExecuteSQL(sql);
-                Console.WriteLine("Datatable created!");
-                
+                Console.WriteLine("Datatable created and populated!");
+                PopulateDatabase();
+
             }
             else
             {
-                Console.WriteLine("Datatable already exists, using existing datatable");
+                Console.WriteLine("Datatable exists");
             }
+            
         }
 
-        //Inserts data into table
         public static void PopulateDatabase()
         {
             var sql =
