@@ -228,7 +228,7 @@ namespace FamilyTree
 
         public static void SearchByLetter()
         {
-            Console.Write("Enter first letter of name:");
+            Console.Write("Enter first letter of name: ");
             var choice = Console.ReadLine();
             choice = choice + "%";
 
