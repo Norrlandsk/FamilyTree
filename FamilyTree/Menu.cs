@@ -8,6 +8,7 @@ namespace FamilyTree
 
         #region Menus
 
+        //Startup menu, will only be showed once during startup
         public static void MainMenu()
         {
             while (isRunning)
@@ -39,6 +40,7 @@ namespace FamilyTree
             }
         }
 
+        //Main menu for navigating the program's functions. Switch will send Person object to CRUD method
         public static void CRUDAndSearchMenu()
         {
             while (isRunning)
@@ -111,7 +113,7 @@ namespace FamilyTree
 
         #region Tools
 
-
+        //Confirms correct input used in switch
         public static int ConfirmCorrectInput(int allowedRange)
         {
             int confirmedChoice;
@@ -137,6 +139,7 @@ namespace FamilyTree
             return confirmedChoice;
         }
 
+        //Only allows int as input
         public static int ConfirmCorrectInput(string value)
         {
             int confirmedChoice;
@@ -162,6 +165,7 @@ namespace FamilyTree
             return confirmedChoice;
         }
 
+        //Creates a space between screens
         public static void ContinueAndClear()
         {
             Console.WriteLine("\nPress Enter to continue");
