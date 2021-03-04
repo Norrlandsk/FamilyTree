@@ -355,11 +355,10 @@ namespace FamilyTree
                 {
                     Console.WriteLine("No results for that query! Try different spelling or add % as a wildcard. Try again? [y/n]");
                     var choice = Console.ReadLine().ToLower();
-                    if (choice=="n")
+                    if (choice == "n")
                     {
                         isRunning = false;
                     }
-                    
                 }
             }
             Menu.ContinueAndClear();
@@ -485,7 +484,6 @@ namespace FamilyTree
                 SQLDatabase.ConnectionString = @"Data source=.\SQLExpress; Integrated Security=true; database='FamilyTree'";
                 SQLDatabase.ExecuteSQL(sql);
                 Console.WriteLine("Datatable created!");
-                
             }
             else
             {
@@ -496,9 +494,14 @@ namespace FamilyTree
         //Inserts data into table
         public static void PopulateDatabase()
         {
-            var sql =
+            var controlsql = "SELECT * FROM People";
+            DataTable dt = SQLDatabase.GetDataTable(controlsql);
 
-         @$"INSERT INTO People VALUES ('Viktor', 'Salmberg', '1990', '4','5')
+            if (dt.Rows.Count == 0)
+            {
+                var sql =
+
+             @$"INSERT INTO People VALUES ('Viktor', 'Salmberg', '1990', '4','5')
             INSERT INTO People VALUES ('David', 'Salmberg', '1992', '4', '5')
             INSERT INTO People VALUES ('Josefina', 'Salmberg', '1977', '4', '5')
 
@@ -526,7 +529,9 @@ namespace FamilyTree
             INSERT INTO People VALUES ('Lina', 'Hårddisksson', '1889','0','0')
 
 ";
-            SQLDatabase.ExecuteSQL(sql);
+                SQLDatabase.ExecuteSQL(sql);
+            Console.WriteLine("Table populated!");
+            }
         }
 
         #endregion Database and Table
